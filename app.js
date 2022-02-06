@@ -66,20 +66,16 @@ function CreateTokenData(traitInfo, supply) {
 			for (let traitCategory in traitInfo) {
 				let categoryData = traitInfo[traitCategory];
 				let random = Math.random();
+				let min = Math.min();
 				let selected;
 
 				let keys = Object.keys(categoryData.types);
-				keys.sort((a, b) => {
-					let chanceA = categoryData.types[a].chance;
-					let chanceB = categoryData.types[b].chance;
-
-					return chanceA - chanceB;
-				});
-
 				keys.forEach(key => {
 					let traitData = categoryData.types[key];
 
-					if (random <= traitData.chance) {
+					let absVal = Math.abs(random - traitData.chance)
+					if(min > absVal) {
+						min = absVal;
 						selected = traitData;
 					}
 				});
