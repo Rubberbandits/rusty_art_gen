@@ -4,8 +4,6 @@ const myArgs = process.argv.slice(2);
 const { createCanvas, loadImage } = require("canvas");
 const WIDTH = 2000;
 const HEIGHT = 2000;
-const canvas = createCanvas(WIDTH, HEIGHT);
-const ctx = canvas.getContext("2d");
 const totalSupply = myArgs.length > 0 ? Number(myArgs[0]) : 1;
 
 const { LoadTraitData } = require("./traits");
@@ -63,8 +61,9 @@ function CreateTokenData(traitInfo, supply) {
 		for (let i = 0; i < supply; i++) {
 			let tokenData = [];
 			
+			console.log(i);
 			for (let traitCategory in traitInfo) {
-				let categoryData = traitInfo[traitCategory];
+				/*let categoryData = traitInfo[traitCategory];
 				let random = Math.random();
 				let min = Math.min();
 				let selected;
@@ -73,20 +72,27 @@ function CreateTokenData(traitInfo, supply) {
 				keys.forEach(key => {
 					let traitData = categoryData.types[key];
 
-					let absVal = Math.abs(random - traitData.chance)
+					let absVal = Math.abs(traitData.chance - random)
 					if(min > absVal) {
 						min = absVal;
-						selected = traitData;
+						selected = key;
 					}
 				});
 
 				if (selected) {
 					tokenData.push({
-						image: selected.image, 
+						image: categoryData.types[selected].image, 
 						category: traitCategory,
-						data: selected
+						name: selected
 					});
-				};
+
+					console.log(`Selected ${selected} for ${traitCategory} because RNG ${random} is closest to ${categoryData.types[selected].chance}`)
+				};*/
+
+				let categoryData = traitInfo[traitCategory];
+				let traitTypes = categoryData.types;
+
+				
 			}
 
 			generatedTokens.push(tokenData);
@@ -98,6 +104,14 @@ function CreateTokenData(traitInfo, supply) {
 
 function RenderTokenData(tokenID, tokenData) {
 	return new Promise((resolve, reject) => {
+		let attributes = [];
+
+		const canvas = createCanvas(WIDTH, HEIGHT);
+		const ctx = canvas.getContext("2d");
+
+		const canvasNoBG = createCanvas(WIDTH, HEIGHT);
+		const ctxNoBG = canvasNoBG.getContext("2d");
+
 		tokenData.forEach(traitData => {
 			if (traitData.image.length == 0) return;
 			
@@ -107,16 +121,42 @@ function RenderTokenData(tokenID, tokenData) {
                 imageData,
                	0,
                 0,
-                2000,
-                2000
+                WIDTH,
+                HEIGHT
             );
+
+			if (traitData.category != "Background") {
+				ctxNoBG.drawImage(
+					imageData,
+					0,
+					0,
+					WIDTH,
+					HEIGHT
+				);
+			}
+
+			attributes.push({trait_type: traitData.category, value: traitData.name});
+		});
+
+		let metadata = JSON.stringify({
+			"name": `DimWits #${tokenID}`,
+			"description": "",
+			"image": "",
+			"secret": "",
+			"attributes": attributes
 		});
 
 		fs.writeFile(`./output/${tokenID}.png`, canvas.toBuffer("image/png"))
 			.then(() => {
-				collectionProg.increment();
-
-				resolve();
+				fs.writeFile(`./output/${tokenID}_noBG.png`, canvasNoBG.toBuffer("image/png"))
+					.then(() => {
+						fs.writeFile(`./output/${tokenID}.json`, metadata)
+							.then(() => {
+								collectionProg.increment();
+				
+								resolve();
+							});
+					});
 			});
 	});
 }
@@ -154,7 +194,7 @@ LoadTraitData()
 							.then(() => {
 								collectionProg.stop();
 								console.log("Render finished!");
-								process.exit();
+								//process.exit();
 							});
 					});
 			});
