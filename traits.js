@@ -50,6 +50,8 @@ function LoadTraitData() {
 					});
 				}
 
+				//console.log(JSON.stringify(TraitData, null, 2));
+
 				resolve(TraitData);
 			});
 	});
