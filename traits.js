@@ -46,7 +46,7 @@ function LoadTraitData() {
 							lastChance = TraitData[traitCategory].types[traitKeys[index - 1]].chance;
 						}
 
-						TraitData[traitCategory].types[key].chance += lastChance;
+						//TraitData[traitCategory].types[key].chance += lastChance;
 					});
 				}
 
