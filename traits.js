@@ -22,6 +22,7 @@ function LoadTraitData() {
 					TraitData[traitData.LAYER].types[traitData.NAME] = Object.assign(existingData, {
 						image: traitData.IMAGE,
 						chance: traitData.PROBABILITY,
+						category: traitData.LAYER
 					});
 				});
 

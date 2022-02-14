@@ -7,7 +7,6 @@ const HEIGHT = 2000;
 const totalSupply = myArgs.length > 0 ? Number(myArgs[0]) : 1;
 
 const { LoadTraitData } = require("./traits");
-const { UNIQUES } = require("./uniques");
 
 const progressBar = require("cli-progress");
 const collectionProg = new progressBar.SingleBar({}, progressBar.Presets.legacy);
@@ -54,6 +53,300 @@ function LoadTraitImages(TraitInfo) {
 	});
 }
 
+const NoNecklaceIfClothing = {
+	"Wiseguy": true,
+	"White Button-up": true,
+	"Puffer Vest": true,
+	"Flannel Shirt": true,
+	"Hawaiian Shirt": true,
+	"Bomber Jacket": true,
+	"Leather Jacket": true,
+	"Denim Jacket": true,
+	"Sherpa Jacket": true,
+	"Cheap Suit": true,
+	"Candyman": true
+}
+
+const IfGhoulOnlyEyes = {
+	"Angry Dead": true,
+	"Crossed Dead": true,
+	"Dead": true,
+	"Sad Dead": true,
+	"Surprised Dead": true,
+	"Wink Dead": true,
+	"Sad X": true,
+	"Surprised X": true,
+	"Wink X": true,
+	"X": true,
+	"Angry X": true,
+}
+
+const IfSkiMaskNo = {
+	"Fly Blue": true,
+	"Fly Dark Brown": true,
+	"Fly Dead": true,
+	"Fly Green": true,
+	"Fly Light Brown": true,
+	"Fly Magenta": true,
+	"Fly Orange": true,
+	"Fly Red": true,
+	"Fly X": true,
+	"Blackbeard": true,
+	"Lumberjack": true,
+	"Hipster": true,
+	"Cigarette": true,
+	"Cigar": true,
+	"Pipe": true,
+	"Soulpatch": true,
+	"Surgical Mask": true,
+	"Bubblegum": true,
+	"Pill": true,
+}
+
+const NoEarringsIf = {
+	"Football Helment": true,
+	"Balaclava": true,
+	"Jheri Curls": true,
+	"Metalhead": true,
+}
+
+const IfFootballHelmet = {
+	"Blackbeard": true,
+	"Lumberjack": true,
+	"Hipster": true,
+	"Soulpatch": true,
+	"Cigarette": true,
+	"Pipe": true,
+	"Cigar": true,
+	"Bubblegum": true,
+	"Pill": true
+}
+
+const IfMetalHair = {
+	"Surgical Mask": true,
+	"Pipe": true,
+	"Cigarette": true,
+	"Cigar": true,
+	"Bubblegum": true,
+	"Tongue": true,
+	"Pill": true,
+	"Soulpatch": true,
+	"Blackbeard": true,
+	"Lumberjack": true,
+	"Hipster": true,
+	"Patchy": true,
+}
+
+const IfGoldenSkin = {
+	"Fly Blue": true,
+	"Fly Dark Brown": true,
+	"Fly Dead": true,
+	"Fly Green": true,
+	"Fly Light Brown": true,
+	"Fly Magenta": true,
+	"Fly Orange": true,
+	"Fly Red": true,
+	"Fly X": true,
+	"Surgical Mask": true,
+	"Balaclava": true,
+}
+
+const NoGlasses = {
+	"Cyborg": true,
+	"Balaclava": true,
+	"Football Helmet": true,
+	"Fly Blue": true,
+	"Fly Dark Brown": true,
+	"Fly Dead": true,
+	"Fly Green": true,
+	"Fly Light Brown": true,
+	"Fly Magenta": true,
+	"Fly Orange": true,
+	"Fly Red": true,
+	"Fly X": true,
+	"Blue Eye Patch": true,
+	"Red Eye Patch": true,
+	"Orange Eye Patch": true,
+	"Green Eye Patch": true,
+	"Magenta Eye Patch": true,
+	"Dark Brown Eye Patch": true,
+	"Light Brown Eye Patch": true,
+	"Dead Eye Patch": true,
+	"X Eye Patch": true
+}
+
+const IfDogCollarNo = {
+	"Yuppie": true,
+	"Trenchcoat": true,
+	"Labcoat": true,
+	"Pink Polo": true,
+	"Tracksuit": true
+}
+
+const IfFriedChickenBucketNo = {
+	"Surgical Mask": true,
+	"Hipster": true,
+	"Lumberjack": true,
+	"Blackbeard": true,
+	"Patchy": true,
+	"Cyborg": true,
+	"Blue Eye Patch": true,
+	"Red Eye Patch": true,
+	"Orange Eye Patch": true,
+	"Green Eye Patch": true,
+	"Magenta Eye Patch": true,
+	"Dark Brown Eye Patch": true,
+	"Light Brown Eye Patch": true,
+	"Dead Eye Patch": true,
+	"X Eye Patch": true
+}
+
+const IfCyborgEyePutUnder = {
+	"Windy": true,
+	"Tinfoil Hat": true,
+	"Combover": true,
+	"Chad": true,
+}
+
+const NoHoopEarring = {
+	"Yuge": true,
+	"Wizard Hat": true,
+	"Mullet": true,
+	"Mohawk": true,
+	"Gothic Cowboy Hat": true,
+	"Fried Chicken Bucket": true,
+	"Bowler Hat": true
+}
+
+const FlyEyes = {
+	"Fly Blue": true,
+	"Fly Dark Brown": true,
+	"Fly Dead": true,
+	"Fly Green": true,
+	"Fly Light Brown": true,
+	"Fly Magenta": true,
+	"Fly Orange": true,
+	"Fly Red": true,
+	"Fly X": true,
+}
+
+const IfFlyEyes = {
+	"Balaclava": true,
+	"Surgical Mask": true,
+	// no shades
+}
+
+const EarringHoops = {
+	"Steel Hoop": true,
+	"Gold Hoop": true,
+	"Black Hoop": true
+}
+
+function CheckRequirements(curData, meme) {
+	let traitName = meme[0]
+	let traitData = meme[1]
+
+	let isGhoul = false;
+	let isFlyEyes = false;
+	let isCyborgEyes = false;
+	let isTinfoilHat = false;
+	let isFriedChickenBucket = false;
+	let isDogCollar = false;
+	let isGoldenSkin = false;
+	let isMetalhead = false;
+	let isFootballHelmet = false;
+	let noBalaclava = false;
+	let noEarrings = false;
+	let noGlasses = false;
+	let noHoopEarring = false;
+	let noNecklace = false;
+	let noFootballHelmet = false;
+
+	for (let i = 0; i < curData.length; i++) {
+		let data = curData[i];
+
+		if (data.name == "Ghoul") {
+			isGhoul = true;
+		}
+
+		if (FlyEyes[data.name]) {
+			isFlyEyes = true;
+		}
+
+		if (data.name == "Cyborg") {
+			isCyborgEyes = true;
+		}
+
+		if (data.name == "Tinfoil Hat") {
+			isTinfoilHat = true;
+		}
+
+		if (data.name == "Fried-Chicken Bucket") {
+			isFriedChickenBucket = true;
+		}
+
+		if (data.name == "Dog Collar") {
+			isDogCollar = true;
+		}
+
+		if (data.name == "Golden") {
+			isGoldenSkin = true;
+		}
+
+		if (data.name == "Metalhead") {
+			isMetalhead = true;
+		}
+
+		if (data.name == "Football Helmet") {
+			isFootballHelmet = true;
+		}
+
+		if (IfSkiMaskNo[data.name]) {
+			noBalaclava = true;
+		}
+
+		if (NoEarringsIf[data.name]) {
+			noEarrings = true;
+		}
+
+		if (NoGlasses[data.name]) {
+			noGlasses = true;
+		}
+
+		if (NoHoopEarring[data.name]) {
+			noHoopEarring = true;
+		}
+
+		if (NoNecklaceIfClothing[data.name]) {
+			noNecklace = true;
+		}
+
+		if (IfFootballHelmet[data.name]) {
+			noFootballHelmet = true;
+		}
+
+		if (data.category == "Shades" && data.name != "None") {
+			noBalaclava = true;
+			noFootballHelmet = true;
+		}
+	}
+
+	if (traitData.category == "Neck" && noNecklace) return true;
+	if (traitData.category == "Eyes" && isGhoul && !IfGhoulOnlyEyes[traitName]) return true;
+	if (isMetalhead && IfMetalHair[traitName]) return true;
+	if (isGoldenSkin && IfGoldenSkin[traitName]) return true;
+	if (traitData.category == "Shades" && noGlasses) return true;
+	if (isDogCollar && IfDogCollarNo[traitName]) return true;
+	if (isFriedChickenBucket && IfFriedChickenBucketNo[traitName]) return true;
+	if (isTinfoilHat && traitName == "Patchy") return true;
+	if (EarringHoops[traitName] && noHoopEarring) return true;
+	if (isFlyEyes && (IfFlyEyes[traitName] || traitData.category == "Shades")) return true;
+	if (isFootballHelmet && IfFootballHelmet[data.name]) return true;
+	if (noBalaclava && traitName == "Balaclava") return true;
+	if (noFootballHelmet && traitName == "Football Helmet") return true;
+	if (noEarrings && traitData.category == "Earrings") return true;
+}
+
 function CreateTokenData(traitInfo, start, end) {
 	return new Promise((resolve, reject) => {
 		let generatedTokens = [];
@@ -98,7 +391,12 @@ function CreateTokenData(traitInfo, start, end) {
 				const distribution = [];
 				const sum = traitWeights.reduce((a, b) => a + b);
 				for (let i = 0; i < traitKeys.length; ++i) {
+					let trait = traits[i];
 					const count = (traitWeights[i] / sum) * 100;
+
+					if (CheckRequirements(tokenData, trait)) {
+						continue
+					};
 
 					for (let j = 0; j < count; ++j) {
 						distribution.push(i);
@@ -106,6 +404,9 @@ function CreateTokenData(traitInfo, start, end) {
 				}
 
 				let selected = traitKeys[distribution[Math.floor(distribution.length * Math.random())]];
+				if (!selected) {
+					continue
+				}
 
 				tokenData.push({
 					image: categoryData.types[selected].image, 
@@ -163,9 +464,9 @@ function RenderTokenData(tokenID, tokenData) {
 
 		let metadata = JSON.stringify({
 			"name": `DimWits #${tokenID}`,
-			"description": "",
-			"image": "",
-			"secret": "",
+			"description": "DimWits is a collection of 7,777 NFT’s that also serve as a “ticket.” Each DimWit holder has access to exclusive content.",
+			"image": `https://storage.googleapis.com/dimwitsnft/${tokenID}.png`,
+			"secret": `https://storage.googleapis.com/dimwitsnft/${tokenID}_noBG.png`,
 			"attributes": attributes
 		});
 
